@@ -19,6 +19,8 @@ resb 16384
 stack_top:
 
 
+
+; used for segmentation, grub gives us a 32 bit one but we need to switch to a long mode gdt
 section .rodata
 gdt64:
     dq 0                                         ; Null descriptor
@@ -77,24 +79,25 @@ link_page_table_entries:
         ret 
 
 fill_page_table:
-        mov edi, PT_ADDR
-        mov ebx, PT_PRESENT | PT_READABLE
+        mov edi, PT_ADDR ; address of page table
+        mov ebx, PT_PRESENT | PT_READABLE ; flags of page table entry 
         mov ecx, ENTRIES_PER_PT      ; 1 full page table addresses 2MiB
 
 .SetEntry:
-        mov DWORD [edi], ebx
-        add ebx, PAGE_SIZE
-        add edi, SIZEOF_PT_ENTRY
-        loop .SetEntry               ; Set the next entry.
+        mov DWORD [edi], ebx ; Write page table entry 
+        add ebx, PAGE_SIZE ; next physical address 
+        add edi, SIZEOF_PT_ENTRY ; address of next page table entry 
+        loop .SetEntry               ;decreaes ecx and set the next entry if the counter is not 0.
         ret
 
+; enable physical address extensions, allows us to access physical address range larger than 4gb
 enable_pae:
         mov eax, cr4
         or eax, CR4_PAE_ENABLE
         mov cr4, eax
         ret
 
-
+; enable long mode 
 set_lm_bit:
         mov ecx, EFER_MSR
         rdmsr
@@ -103,7 +106,9 @@ set_lm_bit:
         ret
 
 
-        
+
+; double check that protected mode is still enabled so we can jump to long mode
+; we also enable paging here         
 enable_paging:
         mov eax, cr0
         or eax, CR0_PG_ENABLE | CR0_PM_ENABLE   ; ensuring that PM is set will allow for jumping
