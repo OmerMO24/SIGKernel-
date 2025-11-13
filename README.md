@@ -6,6 +6,7 @@
   - GNU Make (aka make): build tool, not explicitly necessary but makes rebuilding all the source files much easier
   - grub2: a bootloader (you need to install xorriso or libisoburn as well for this to work)
   - ld: a linker
+  - NASM: a friendly assembler
 
 ## Platform specific installation stuff:
   - Windows: I have no idea tbh
