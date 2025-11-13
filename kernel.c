@@ -47,7 +47,7 @@ size_t strlen(const char* str)
 size_t terminal_row;
 size_t terminal_column;
 uint8_t terminal_color;
-uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
+uint16_t (*terminal_buffer)[VGA_WIDTH] = (uint16_t (*)[VGA_WIDTH])VGA_MEMORY;
 
 void terminal_initialize(void) 
 {
