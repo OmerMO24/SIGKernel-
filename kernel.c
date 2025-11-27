@@ -22,6 +22,11 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15,
 };
 
+/*
+ * vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
+ * Sets the color bits so we have grey text and a black background
+ */
+
 static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg) 
 {
 	return fg | bg << 4;
